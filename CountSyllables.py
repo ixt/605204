@@ -24,8 +24,53 @@ def main(argv):
     for w in range(len(words)):
         ofile.write(str(countSyllables(words[w])) + ' ')
     ofile.close()
-    sys.exit()
+    with open(outputfile) as s:
+        syllables = s.read().split()
+    placeInFile = 0
+    currentSyllableValue = 0
+    currentTotalWords = 0
+    line = ""
+    desiredValue = 5
+    
+    for lines in range(3):
+        foundLine = False
+        if lines == 0 or lines == 2:
+            desiredValue = 5
+        else:
+            desiredValue = 7
+        while not foundLine :
+            if placeInFile >= len(words) or placeInFile >= len(syllables):
+                print('not enough words')
+                sys.exit()
+            if int(syllables[placeInFile]) == desiredValue:
+                line += words[placeInFile]
+                line += '/n'
+                currentTotalWords = 0
+                foundLine = True
 
+            currentSyllableValue = 0
+            if int(syllables[placeInFile]) > desiredValue:
+                placeInFile += 1
+                currentTotalWords = 0
+            else:
+                for s in range(currentTotalWords):
+                    whichWord = (placeInFile - currentTotalWords) + s
+                    currentSyllableValue +=  int(syllables[whichWord])
+                if currentSyllableValue == desiredValue:
+                    for w in range(currentTotalWords):
+                        whichWord = (placeInFile - currentTotalWords) + w
+                        line += words[whichWord] + ' '
+                    line += '\n'
+                    currentTotalWords = 0
+                    foundLine = True
+                if currentSyllableValue > desiredValue:
+                    currentTotalWords -= 1
+                if currentSyllableValue < desiredValue:
+                    currentTotalWords += 1
+                placeInFile += 1
+        
+    print(line)
+    sys.exit()
 
 # somewhat rewritten comment by Terososauros on Stackoverflow
 def countSyllables(word):
