@@ -5,7 +5,7 @@
 #entry=$1
 
 while read entry; do
-    sumy luhn --url="http://simple.wikipedia.org/wiki/$entry" > .tempin
+    lynx --dump http://simple.wikipedia.org/wiki/$entry | tail -n+13 | sed 's/\[[0-9]*\]//g' > .tempin
     ./CountSyllables.py -i .tempin -o .tempout > outputs/$entry.txt
     cat outputs/$entry.txt
 done < list.txt
