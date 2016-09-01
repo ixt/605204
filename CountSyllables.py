@@ -29,7 +29,7 @@ def main(argv):
     placeInFile = 0
     currentSyllableValue = 0
     currentTotalWords = 0
-    line = ""
+    line = ''
     desiredValue = 5
     
     for lines in range(3):
@@ -44,7 +44,7 @@ def main(argv):
                 sys.exit()
             if int(syllables[placeInFile]) == desiredValue:
                 line += words[placeInFile]
-                line += '/n'
+                line += '\n'
                 currentTotalWords = 0
                 foundLine = True
 
