@@ -2,18 +2,19 @@
 
 ## Test Script
 
-#entry=$1
+sed 1d list.txt | while read entry; do
+    lynx --dump -width 1024 http://simple.wikipedia.org/wiki/$entry | sed 's/\[[^[]*\]//g' > .tempsite
+    cat .tempsite > .tempwhile
+    NAVIGATION=$((( 1 + $(grep -n "Navigation menu" .tempsite | cut -d ':' -f1 | tail -1))))
+    TITLE=$(grep -n "$(echo $entry | sed 's/_/ /g')" .tempsite | cut -d ':' -f1 | head -n2 | tail -1)
+    echo $NAVIGATION $entry
+    cat .tempsite | head --lines=$NAVIGATION | tail -n+$TITLE > .tempwhile
+    
+    cat .tempwhile | sed 's/([^)]*)//' | sed 's/\[change |//g' > .tempin
 
-while read entry; do
-   # lynx --dump http://simple.wikipedia.org/wiki/$entry | sed 's/\[[0-9]*\]//g' > .tempin
-    #NAVIGATIONLINE=$(grep -n "References" .tempin | cut -d ':' -f1 | tail -1)
-    #echo $NAVIGATIONLINE
-    #cat .tempin | head -n$NAVIGATIONLINE > .tempin
-    wget -O .tempsite "http://simple.wikipedia.org/wiki/$entry" -q
-    cat .tempsite | sed 's/<[a-z]*>//g' | sumy luhn > .tempin
-    ./CountSyllables.py -i .tempin -o .tempout > outputs/$entry.txt
+    ./Haiku.py -i .tempin -o .tempout > outputs/$entry.txt
     cat outputs/$entry.txt
-done < list.txt
-rm .tempin .tempout
+done
+#rm .tempin .tempout 
 
 echo "DONE!"
