@@ -10,7 +10,7 @@ sed 1d list.txt | while read entry; do
     echo $NAVIGATION $entry
     cat .tempsite | tail -n+$TITLE | head --lines=$NAVIGATION > .tempwhile
     
-    cat .tempwhile | sed -e 's/([^()]*)//' | sed 's/\[change |//g' > .tempin
+    cat .tempwhile | sed -e 's/([^()]*)//g' | sed 's/\[change |//g' > .tempin
 
     ./Haiku.py -i .tempin -o .tempout > outputs/$entry.txt
     cat outputs/$entry.txt
