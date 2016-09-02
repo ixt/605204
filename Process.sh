@@ -8,9 +8,9 @@ sed 1d list.txt | while read entry; do
     NAVIGATION=$((( 1 + $(grep -n "Navigation menu" .tempsite | cut -d ':' -f1 | tail -1))))
     TITLE=$(grep -n "$(echo $entry | sed 's/_/ /g')" .tempsite | cut -d ':' -f1 | head -n2 | tail -1)
     echo $NAVIGATION $entry
-    cat .tempsite | head --lines=$NAVIGATION | tail -n+$TITLE > .tempwhile
+    cat .tempsite | tail -n+$TITLE | head --lines=$NAVIGATION > .tempwhile
     
-    cat .tempwhile | sed 's/([^)]*)//' | sed 's/\[change |//g' > .tempin
+    cat .tempwhile | sed -e 's/([^()]*)//' | sed 's/\[change |//g' > .tempin
 
     ./Haiku.py -i .tempin -o .tempout > outputs/$entry.txt
     cat outputs/$entry.txt
