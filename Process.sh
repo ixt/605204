@@ -1,15 +1,16 @@
 #!/bin/bash
 
-## Test Script
+## Test Script -- not clean, will probably never be clean
+## if you ever attempt to clean this that would be nice but totally not required as functionality is limited anyway
+
+SOURCE='https://simple.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&redirects=1&titles='
 
 sed 1d list.txt | while read entry; do
-    lynx --dump -width 1024 http://simple.wikipedia.org/wiki/$entry | sed 's/\[[^[]*\]//g' > .tempsite
-    cat .tempsite > .tempwhile
-    TITLE=$(grep -n "$(echo $entry | sed 's/_/ /g')" .tempsite | cut -d ':' -f1 | head -n2 | tail -1)
-    if [[ $TITLE ]]; then
-        cat .tempsite | tail -n+$TITLE > .tempwhile
-    fi
-    cat .tempwhile | sed -e 's/([^()]*)//g' | sed 's/\[change |//g' | sed 's/\.[a-z]*//g' | sed -e 's/[[:punct:]]//g' > .tempin
+    #lynx --dump -width 1024 http://simple.wikipedia.org/wiki/$entry | sed 's/\[[^[]*\]//g' > .tempsite
+    lynx --dump -width 1024 $SOURCE$entry > .tempsite
+    cat .tempsite | sed -e 's/.*"extract":"//' | sed -e 's/<[^<>]*>//g' > .tempwhile
+
+    cat .tempwhile | uni2ascii -a U -q | sed -e 's/\\n/\n/g' | sed -e 's/\\u//g' > .tempin
 
     ./Haiku.py -i .tempin -o .tempout > outputs/$entry.txt
     echo $NAVIGATION $TITLE $entry
