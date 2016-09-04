@@ -10,8 +10,7 @@ sed 1d list.txt | while read entry; do
     lynx --dump -width 1024 $SOURCE$entry > .tempsite
     cat .tempsite | sed -e 's/.*"extract":"//' | sed -e 's/<[^<>]*>//g' | sed -e 's/([^()]*)//g' > .tempwhile
 
-    cat .tempwhile | uni2ascii -a U -q | sed -e 's/\\n/\n/g' | sed -e 's/\\u[0-9a-f][0-9a-f][0-9a-f][0-9a-f]//g' \
-        | sed -e 's/\\//g' | sed -e 's/[[:punct:]]//g'  > .tempin
+    cat .tempwhile | ascii2uni -a U -q | sed -e 's/\\n/\n/g' | sed -e 's/\\//g' | sed -e 's/[[:punct:]]//g'  > .tempin
 
     ./Haiku.py -i .tempin -o .tempout > outputs/$entry.txt
     echo $NAVIGATION $TITLE $entry
